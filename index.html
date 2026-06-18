@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hoff & Leigh — QR Code Generator</title>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial, sans-serif; background: #f5f5f5; min-height: 100vh; }
+
+  header {
+    background: #E8192C;
+    color: white;
+    text-align: center;
+    padding: 28px 20px 22px;
+  }
+  header h1 { font-size: 2rem; font-weight: bold; letter-spacing: 0.5px; }
+  header p  { font-size: 1rem; opacity: 0.9; margin-top: 6px; }
+
+  .container {
+    max-width: 860px;
+    margin: 36px auto;
+    padding: 0 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+  }
+  @media(max-width:640px){ .container{ grid-template-columns:1fr; } }
+
+  .card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.08);
+    padding: 28px;
+  }
+  .card h2 {
+    font-size: 1.1rem;
+    color: #E8192C;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #E8192C;
+  }
+
+  label { display: block; font-size: .85rem; font-weight: bold; color: #444; margin-bottom: 4px; }
+  input {
+    width: 100%; padding: 10px 12px;
+    border: 1.5px solid #ddd; border-radius: 6px;
+    font-size: .95rem; margin-bottom: 14px;
+    transition: border-color .2s;
+  }
+  input:focus { outline: none; border-color: #E8192C; }
+
+  button {
+    width: 100%; padding: 13px;
+    background: #E8192C; color: white;
+    border: none; border-radius: 8px;
+    font-size: 1rem; font-weight: bold;
+    cursor: pointer; transition: background .2s;
+    margin-top: 4px;
+  }
+  button:hover { background: #c0121f; }
+  button:disabled { background: #ccc; cursor: not-allowed; }
+
+  #preview-panel { display: flex; flex-direction: column; align-items: center; }
+  #preview-panel h2 { width: 100%; }
+
+  #canvas-wrap {
+    width: 100%; display: flex; flex-direction: column;
+    align-items: center; gap: 16px; margin-top: 12px;
+  }
+  canvas {
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.15);
+    max-width: 100%;
+  }
+
+  #download-btn {
+    display: none;
+    width: auto; padding: 11px 32px;
+    background: #222; color: white;
+    border: none; border-radius: 8px;
+    font-size: .95rem; font-weight: bold;
+    cursor: pointer; transition: background .2s;
+    text-decoration: none;
+  }
+  #download-btn:hover { background: #444; }
+
+  #placeholder {
+    width: 100%; padding: 60px 20px;
+    border: 2px dashed #ddd; border-radius: 10px;
+    text-align: center; color: #aaa;
+    font-size: .95rem; margin-top: 12px;
+  }
+  #placeholder span { font-size: 2.5rem; display: block; margin-bottom: 8px; }
+
+  .required { color: #E8192C; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Hoff &amp; Leigh</h1>
+  <p>QR Code Generator — create a branded QR code for any property listing</p>
+</header>
+
+<div class="container">
+
+  <!-- FORM -->
+  <div class="card">
+    <h2>Property Details</h2>
+
+    <label>Listing URL <span class="required">*</span></label>
+    <input id="url" type="url" placeholder="https://www.hoffleigh.com/listing/..." />
+
+    <label>Property Address <span class="required">*</span></label>
+    <input id="address" type="text" placeholder="1234 Main St, Suite 100" />
+
+    <label>Broker Full Name <span class="required">*</span></label>
+    <input id="broker" type="text" placeholder="Jane Smith" />
+
+    <label>Broker Title</label>
+    <input id="title" type="text" placeholder="Broker" value="Broker" />
+
+    <label>Phone Number</label>
+    <input id="phone" type="text" placeholder="(719) 555-1234" />
+
+    <label>Email Address</label>
+    <input id="email" type="email" placeholder="name@hoffleigh.com" />
+
+    <button onclick="generate()">Generate QR Code</button>
+  </div>
+
+  <!-- PREVIEW -->
+  <div class="card" id="preview-panel">
+    <h2>Preview &amp; Download</h2>
+    <div id="canvas-wrap">
+      <div id="placeholder">
+        <span>🏢</span>
+        Fill in the details and click<br><strong>Generate QR Code</strong>
+      </div>
+      <canvas id="qr-canvas" width="500" height="680" style="display:none"></canvas>
+      <a id="download-btn">⬇ Download PNG</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const BRAND_RED = '#E8192C';
+const WHITE     = '#FFFFFF';
+const DARK      = '#1E1E1E';
+const LIGHT     = '#FFCCCC';
+
+function truncate(ctx, text, maxW, font) {
+  ctx.font = font;
+  while (ctx.measureText(text).width > maxW && text.length > 4)
+    text = text.slice(0, -2) + '…';
+  return text;
+}
+
+function centered(ctx, text, y, font, color, maxW) {
+  ctx.font = font;
+  ctx.fillStyle = color;
+  text = truncate(ctx, text, maxW, font);
+  const w = ctx.measureText(text).width;
+  ctx.fillText(text, (500 - w) / 2, y);
+}
+
+async function generate() {
+  const url     = document.getElementById('url').value.trim();
+  const address = document.getElementById('address').value.trim();
+  const broker  = document.getElementById('broker').value.trim();
+  const title   = document.getElementById('title').value.trim() || 'Broker';
+  const phone   = document.getElementById('phone').value.trim();
+  const email   = document.getElementById('email').value.trim();
+
+  if (!url)     { alert('Please enter the listing URL.'); return; }
+  if (!address) { alert('Please enter the property address.'); return; }
+  if (!broker)  { alert('Please enter the broker name.'); return; }
+
+  const finalURL = url.startsWith('http') ? url : 'https://' + url;
+
+  // Generate raw QR into a temp canvas
+  const tmpCanvas = document.createElement('canvas');
+  await QRCode.toCanvas(tmpCanvas, finalURL, {
+    width: 460, margin: 4,
+    color: { dark: BRAND_RED, light: WHITE }
+  });
+
+  // Draw branded card on main canvas
+  const canvas = document.getElementById('qr-canvas');
+  const ctx    = canvas.getContext('2d');
+  const W = 500, H = 680, HH = 90, FH = 95, QH = H - HH - FH;
+
+  // Background
+  ctx.fillStyle = WHITE;
+  ctx.fillRect(0, 0, W, H);
+
+  // Header
+  ctx.fillStyle = BRAND_RED;
+  ctx.fillRect(0, 0, W, HH);
+
+  // Footer
+  ctx.fillStyle = BRAND_RED;
+  ctx.fillRect(0, H - FH, W, FH);
+
+  // Logo text
+  ctx.font = 'bold 34px Arial';
+  ctx.fillStyle = WHITE;
+  const logoW = ctx.measureText('Hoff & Leigh').width;
+  ctx.fillText('Hoff & Leigh', (W - logoW) / 2, 56);
+
+  // Logo underline
+  ctx.fillStyle = 'rgba(180,10,25,0.8)';
+  ctx.fillRect(W/2 - 55, 66, 110, 5);
+
+  // QR code
+  const qrX = (W - 460) / 2;
+  const qrY = HH + (QH - 460) / 2;
+  ctx.drawImage(tmpCanvas, qrX, qrY, 460, 460);
+
+  // Footer text
+  const ft = H - FH + 26;
+  centered(ctx, address, ft, 'bold 20px Arial', WHITE, 460);
+
+  const brokerLine = broker + (title ? '  |  ' + title : '');
+  centered(ctx, brokerLine, ft + 30, '17px Arial', WHITE, 460);
+
+  const contactLine = [phone, email].filter(Boolean).join('   |   ');
+  if (contactLine)
+    centered(ctx, contactLine, ft + 54, '14px Arial', WHITE, 460);
+
+  // Show canvas, hide placeholder
+  document.getElementById('placeholder').style.display = 'none';
+  canvas.style.display = 'block';
+
+  // Set up download
+  const safeName = address.replace(/[^a-zA-Z0-9]/g, '_').replace(/_+/g,'_').slice(0,60);
+  const link = document.getElementById('download-btn');
+  link.href     = canvas.toDataURL('image/png');
+  link.download = safeName + '.png';
+  link.style.display = 'inline-block';
+}
+
+// Allow Enter key to trigger generate
+document.addEventListener('keydown', e => { if (e.key === 'Enter') generate(); });
+</script>
+</body>
+</html>
