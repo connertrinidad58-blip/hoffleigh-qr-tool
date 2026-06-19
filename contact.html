@@ -6,126 +6,48 @@
 <title>Hoff &amp; Leigh — Property Contact</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: Arial, sans-serif;
-  background: #f5f5f5;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-header {
-  width: 100%;
-  background: #E8192C;
-  color: white;
-  text-align: center;
-  padding: 28px 20px 24px;
-}
-header h1 { font-size: 1.9rem; font-weight: bold; }
-header p  { font-size: 0.95rem; opacity: 0.85; margin-top: 4px; }
-
-.card {
-  background: white;
-  border-radius: 14px;
-  box-shadow: 0 4px 20px rgba(0,0,0,.10);
-  padding: 28px 24px;
-  margin: 28px 16px;
-  width: 100%;
-  max-width: 420px;
-  text-align: center;
-}
-
-.address {
-  font-size: 1.25rem;
-  font-weight: bold;
-  color: #1a1a1a;
-  margin-bottom: 6px;
-}
-.broker-name {
-  font-size: 1.05rem;
-  color: #E8192C;
-  font-weight: bold;
-  margin-bottom: 2px;
-}
-.broker-title {
-  font-size: 0.9rem;
-  color: #888;
-  margin-bottom: 24px;
-}
-
-.divider {
-  border: none;
-  border-top: 1px solid #eee;
-  margin: 20px 0;
-}
-
-.btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  width: 100%;
-  padding: 16px;
-  border-radius: 10px;
-  font-size: 1.05rem;
-  font-weight: bold;
-  text-decoration: none;
-  margin-bottom: 12px;
-  transition: opacity 0.15s;
-}
-.btn:hover { opacity: 0.88; }
-.btn:active { opacity: 0.7; }
-
-.btn-call  { background: #E8192C; color: white; }
-.btn-text  { background: #1a1a1a; color: white; }
-.btn-email { background: #f0f0f0; color: #1a1a1a; border: 1.5px solid #ddd; }
+body { font-family: Arial, sans-serif; background: #f5f5f5; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+header { width: 100%; background: #E8192C; text-align: center; padding: 20px 20px 18px; }
+header img { height: 70px; display: block; margin: 0 auto; }
+.card { background: white; border-radius: 14px; box-shadow: 0 4px 20px rgba(0,0,0,.10); padding: 28px 24px; margin: 28px 16px; width: 100%; max-width: 420px; text-align: center; }
+.address { font-size: 1.25rem; font-weight: bold; color: #1a1a1a; margin-bottom: 6px; }
+.broker-name { font-size: 1.05rem; color: #E8192C; font-weight: bold; margin-bottom: 2px; }
+.broker-title { font-size: .9rem; color: #888; margin-bottom: 24px; }
+hr { border: none; border-top: 1px solid #eee; margin: 20px 0; }
+.btn { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; padding: 16px; border-radius: 10px; font-size: 1.05rem; font-weight: bold; text-decoration: none; margin-bottom: 12px; transition: opacity .15s; }
+.btn:hover { opacity: .88; }
+.btn-call    { background: #E8192C; color: white; }
+.btn-text    { background: #1a1a1a; color: white; }
+.btn-email   { background: #f0f0f0; color: #1a1a1a; border: 1.5px solid #ddd; }
 .btn-listing { background: white; color: #E8192C; border: 2px solid #E8192C; }
-
 .btn svg { width: 22px; height: 22px; flex-shrink: 0; }
-
 .hidden { display: none !important; }
-
-footer {
-  margin-top: auto;
-  padding: 20px;
-  text-align: center;
-  color: #bbb;
-  font-size: 0.8rem;
-}
+footer { margin-top: auto; padding: 20px; text-align: center; color: #bbb; font-size: .8rem; }
 </style>
 </head>
 <body>
-
 <header>
-  <h1>Hoff &amp; Leigh</h1>
-  <p>Commercial Real Estate</p>
+  <img src="data:image/png;base64,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" alt="Hoff &amp; Leigh" />
 </header>
 
 <div class="card">
   <div class="address" id="address">Loading...</div>
   <div class="broker-name" id="broker-name"></div>
   <div class="broker-title" id="broker-title"></div>
-
-  <hr class="divider">
-
+  <hr>
   <a id="btn-call" class="btn btn-call" href="#">
     <svg viewBox="0 0 24 24" fill="white"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>
     Call Broker
   </a>
-
   <a id="btn-text" class="btn btn-text" href="#">
     <svg viewBox="0 0 24 24" fill="white"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.2L4 17.2V4h16v12z"/></svg>
     Text Broker
   </a>
-
   <a id="btn-email" class="btn btn-email" href="#">
     <svg viewBox="0 0 24 24" fill="#1a1a1a"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
     Email Broker
   </a>
-
-  <hr class="divider">
-
+  <hr>
   <a id="btn-listing" class="btn btn-listing" href="#">
     <svg viewBox="0 0 24 24" fill="#E8192C"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
     View Property Listing
@@ -135,22 +57,19 @@ footer {
 <footer>Hoff &amp; Leigh Commercial Real Estate &bull; Colorado Springs, CO</footer>
 
 <script>
-// Read params from URL
-var params = new URLSearchParams(window.location.search);
-var address = params.get('address') || 'Property';
-var broker  = params.get('broker')  || '';
-var title   = params.get('title')   || 'Broker';
-var phone   = params.get('phone')   || '';
-var email   = params.get('email')   || '';
-var listing = params.get('listing') || '';
+var p = new URLSearchParams(window.location.search);
+var address = p.get('address') || 'Property';
+var broker  = p.get('broker')  || '';
+var title   = p.get('title')   || 'Broker';
+var phone   = p.get('phone')   || '';
+var email   = p.get('email')   || '';
+var listing = p.get('listing') || '';
 
-// Fill in text
-document.getElementById('address').textContent     = address;
-document.getElementById('broker-name').textContent = broker;
+document.getElementById('address').textContent      = address;
+document.getElementById('broker-name').textContent  = broker;
 document.getElementById('broker-title').textContent = title;
 document.title = address + ' — Hoff & Leigh';
 
-// Wire up buttons
 var callBtn    = document.getElementById('btn-call');
 var textBtn    = document.getElementById('btn-text');
 var emailBtn   = document.getElementById('btn-email');
@@ -164,13 +83,11 @@ if (phone) {
   callBtn.classList.add('hidden');
   textBtn.classList.add('hidden');
 }
-
 if (email) {
   emailBtn.href = 'mailto:' + email + '?subject=Inquiry about ' + encodeURIComponent(address);
 } else {
   emailBtn.classList.add('hidden');
 }
-
 if (listing) {
   listingBtn.href = listing;
 } else {
